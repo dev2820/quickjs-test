@@ -21,10 +21,10 @@ const $result = document.getElementById("result");
 
 function getDefaultCode() {
   const defaultCode = `function main() { \n\tconsole.log('Hello World')\n}`;
-  const pathname = window.location.pathname.slice(1);
-  if (pathname === "") return defaultCode;
+  const codeDecoded = window.location.search.slice("?code=".length);
+  if (codeDecoded === "") return defaultCode;
   try {
-    const givenCode = atob(pathname);
+    const givenCode = atob(codeDecoded);
     return givenCode;
   } catch (err) {
     alert("코드 디코딩에 실패했습니다.");
@@ -42,7 +42,7 @@ $toLink.addEventListener("click", async () => {
   const str = editor.getValue();
   const base64 = btoa(str);
 
-  const href = `${window.location.origin}/${base64}`;
+  const href = `${window.location.origin}${window.location.pathname}?code=${base64}`;
 
   try {
     await navigator.clipboard.writeText(href);
