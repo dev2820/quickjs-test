@@ -20,7 +20,7 @@ const $toLink = document.getElementById("to-link");
 const $result = document.getElementById("result");
 
 function getDefaultCode() {
-  const defaultCode = `function main() { \n\tconsole.log('Hello World')\n}`;
+  const defaultCode = `function main() { \n\treturn 3\n}`;
   const codeDecoded = window.location.search.slice("?code=".length);
   if (codeDecoded === "") return defaultCode;
   try {
