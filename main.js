@@ -3,6 +3,9 @@ import { execute } from "./src/quickjs";
 import * as monaco from "monaco-editor";
 import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
 import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
+import EvalWorker from "./src/workers/eval.worker?worker";
+// import EvalWorkerURL from "./src/workers/eval.worker?worker&url";
+// const EvalWorker = new Worker(EvalWorkerURL, { type: "module" });
 
 self.MonacoEnvironment = {
   getWorker(_, label) {
@@ -15,9 +18,14 @@ self.MonacoEnvironment = {
 };
 
 const $editor = document.getElementById("editor");
-const $button = document.getElementById("execute");
+const $execute = document.getElementById("execute");
+const $params = document.getElementById("params");
 const $toLink = document.getElementById("to-link");
+const $testing = document.getElementById("testing");
 const $result = document.getElementById("result");
+const $test1params = document.getElementById("test-1");
+const $test2params = document.getElementById("test-2");
+const $test3params = document.getElementById("test-3");
 
 function getDefaultCode() {
   const defaultCode = `function main() { \n\treturn 3\n}`;
@@ -52,10 +60,44 @@ $toLink.addEventListener("click", async () => {
   }
 });
 
-$button.addEventListener("click", async () => {
+$execute.addEventListener("click", async () => {
   const code = editor.getValue();
-  const result = await execute(code);
+  const params = JSON.parse($params.value);
+
+  const result = await execute(code, params);
 
   $result.innerText = result;
   console.log("result: ", result);
+});
+
+$testing.addEventListener("click", () => {
+  // const worker1 = new Worker(EvalWorkerURL, { type: "module" });
+
+  const worker1 = new EvalWorker();
+  const params1 = JSON.parse($test1params.value || "[]");
+  worker1.addEventListener("message", (evt) => {
+    const { result } = evt.data;
+    document.querySelector("#test-1 ~ .result").innerText = result;
+  });
+
+  worker1.postMessage({
+    id: 1,
+    params: params1,
+    code: editor.getValue(),
+  });
+
+  const worker2 = new EvalWorker();
+  // const worker2 = new Worker(EvalWorkerURL, { type: "module" });
+
+  const params2 = JSON.parse($test2params.value || "[]");
+  worker2.addEventListener("message", (evt) => {
+    const { result } = evt.data;
+    document.querySelector("#test-2 ~ .result").innerText = result;
+  });
+
+  worker2.postMessage({
+    id: 2,
+    params: params2,
+    code: editor.getValue(),
+  });
 });

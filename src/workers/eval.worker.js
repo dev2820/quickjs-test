@@ -1,26 +1,45 @@
 import { getQuickJS, shouldInterruptAfterDeadline } from "quickjs-emscripten";
 
-export async function execute(code, params) {
+self.onerror = (e) => {
+  console.log(e);
+};
+self.addEventListener("error", (e) => {
+  console.log(8, e);
+});
+
+self.addEventListener("message", async function (e) {
+  const { id, params, code } = e.data;
+  console.log(params);
+  try {
+    const result = await execute(code, params);
+    self.postMessage({
+      message: `${id} has done`,
+      result,
+    });
+  } catch (err) {
+    self.postMessage({
+      err,
+    });
+  }
+});
+
+async function execute(code, params = []) {
   const QuickJS = await getQuickJS();
   const vm = QuickJS.newContext();
 
   try {
-    const targetCode = wrapBorn(code, params);
-    console.log(targetCode);
-    const result = vm.evalCode(targetCode, {
+    const result = vm.evalCode(wrapBorn(code, params), {
       shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + 1000),
       memoryLimitBytes: 1024 * 1024,
     });
 
     if (result.error) {
       const value = vm.dump(result.error);
-      // console.log("Execution failed:", vm.dump(result.error));
       result.error.dispose();
 
       return value;
     } else {
       const value = vm.dump(result.value);
-      // console.log("Success:", vm.dump(result.value));
       result.value.dispose();
 
       return value;
@@ -30,6 +49,6 @@ export async function execute(code, params) {
   }
 }
 
-const wrapBorn = (code, params) => {
+const wrapBorn = (code, params = []) => {
   return `${code}\nmain(${params.join(",")});`;
 };

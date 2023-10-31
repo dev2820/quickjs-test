@@ -8,16 +8,51 @@
   </head>
   <body>
     <div id="app">
-      MaxHeap: 1024*1024<br />
-      MaxRunTime: 1000ms
-      <div id="view">
+      <section>
+        MaxHeap: 1024*1024<br />
+        MaxRunTime: 1000ms
+      </section>
+      <section class="controller">
+        <button id="execute">실행</button>
+        <button id="testing">테스트</button>
+        <button id="to-link">링크 생성</button>
+      </section>
+      <section id="view">
         <div id="editor"></div>
-        Result Here:
-        <div id="result"></div>
-      </div>
+        <div class="card">
+          <label>
+            입력값
+            <textarea id="params"></textarea>
+          </label>
+          <label>
+            <h3>실행 결과</h3>
+            <p id="result">실행시 결과가 여기 표시됩니다.</p>
+          </label>
+          <label>
+            테스트케이스 1
+            <textarea
+              id="test-1"
+              placeholder="인자를 배열 형태로 입력하세요"
+            ></textarea>
+            <br />
+            result:
+            <p class="result"></p>
+          </label>
+          <br />
+          <label>
+            테스트케이스 2
+            <textarea
+              id="test-2"
+              placeholder="인자를 배열 형태로 입력하세요"
+            ></textarea>
+            <br />
+            result:
+            <p class="result"></p>
+          </label>
+          <br />
+        </div>
+      </section>
       <br />
-      <button id="execute">실행</button>
-      <button id="to-link">링크 생성</button>
     </div>
     <script type="module" src="/main.js"></script>
   </body>
