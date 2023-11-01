@@ -6,29 +6,13 @@ import EvalWorker from "./src/workers/eval.worker?worker";
 const $editor = document.getElementById("editor");
 const $execute = document.getElementById("execute");
 const $params = document.getElementById("params");
-const $toLink = document.getElementById("to-link");
 const $testing = document.getElementById("testing");
 const $result = document.getElementById("result");
 const $test1params = document.getElementById("test-1");
 const $test2params = document.getElementById("test-2");
-const $test3params = document.getElementById("test-3");
 
 const defaultCode = `function main() { \n\treturn 3\n}`;
 const editor = createEditor($editor, defaultCode);
-
-$toLink.addEventListener("click", async () => {
-  const str = editor.getValue();
-  const base64 = btoa(str);
-
-  const href = `${window.location.origin}${window.location.pathname}?code=${base64}`;
-
-  try {
-    await navigator.clipboard.writeText(href);
-    alert("클립보드에 복사되었습니다.");
-  } catch (err) {
-    alert("링크 생성에 실패했습니다", err.message);
-  }
-});
 
 $execute.addEventListener("click", async () => {
   const code = editor.getValue();
