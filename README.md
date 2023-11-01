@@ -17,3 +17,4 @@ https://dev2820.github.io/quickjs-test/?code=ZnVuY3Rpb24gbWFpbigpIHsgCiAgICByZXR
 
 - rollupOption중 output.inlineDynamicImports에 대해 조사할 것
 - worker의 포멧이 iife와 es 두 종류인 것에 대해 조사할 것
+- console.log 구현 및 삽입
