@@ -1,19 +1,7 @@
 import "./style.css";
+import { createEditor } from "./src/modules/editor";
 import { execute } from "./src/quickjs";
-import * as monaco from "monaco-editor";
-import editorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
-import tsWorker from "monaco-editor/esm/vs/language/typescript/ts.worker?worker";
 import EvalWorker from "./src/workers/eval.worker?worker";
-
-self.MonacoEnvironment = {
-  getWorker(_, label) {
-    if (label === "typescript" || label === "javascript") {
-      return new tsWorker();
-    }
-
-    return new editorWorker();
-  },
-};
 
 const $editor = document.getElementById("editor");
 const $execute = document.getElementById("execute");
@@ -25,24 +13,8 @@ const $test1params = document.getElementById("test-1");
 const $test2params = document.getElementById("test-2");
 const $test3params = document.getElementById("test-3");
 
-function getDefaultCode() {
-  const defaultCode = `function main() { \n\treturn 3\n}`;
-  const codeDecoded = window.location.search.slice("?code=".length);
-  if (codeDecoded === "") return defaultCode;
-  try {
-    const givenCode = atob(codeDecoded);
-    return givenCode;
-  } catch (err) {
-    alert("코드 디코딩에 실패했습니다.");
-  }
-
-  return defaultCode;
-}
-
-const editor = monaco.editor.create($editor, {
-  value: getDefaultCode(),
-  language: "javascript",
-});
+const defaultCode = `function main() { \n\treturn 3\n}`;
+const editor = createEditor($editor, defaultCode);
 
 $toLink.addEventListener("click", async () => {
   const str = editor.getValue();
@@ -60,7 +32,7 @@ $toLink.addEventListener("click", async () => {
 
 $execute.addEventListener("click", async () => {
   const code = editor.getValue();
-  const params = JSON.parse($params.value);
+  const params = JSON.parse($params.value ?? "[]");
 
   const result = await execute(code, params);
 
