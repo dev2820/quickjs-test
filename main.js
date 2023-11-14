@@ -19,5 +19,8 @@ $inputs.appendChild(testcase2.$dom);
 $exec.addEventListener("click", async () => {
   const code = Editor.getEditor().getValue();
   const result = await execute(code, []);
-  document.getElementById("result").innerText = result;
+  document.getElementById("result").innerText = `
+    time: ${result.time}
+    value: ${result.value}
+  `;
 });

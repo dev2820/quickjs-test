@@ -6,12 +6,14 @@ export async function execute(code, params) {
 
   try {
     const targetCode = wrapBorn(code, params);
-    console.time("quickjs runtime");
+    // console.time("quickjs runtime");
+    const startTime = performance.now();
     const result = vm.evalCode(targetCode, {
       shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + 1000),
       memoryLimitBytes: 1024 * 1024,
     });
-    console.timeEnd("quickjs runtime");
+    // console.timeEnd("quickjs runtime");
+    const endTime = performance.now();
 
     if (result.error) {
       const value = vm.dump(result.error);
@@ -22,7 +24,10 @@ export async function execute(code, params) {
       const value = vm.dump(result.value);
       result.value.dispose();
 
-      return value;
+      return {
+        time: endTime - startTime,
+        value,
+      };
     }
   } finally {
     vm.dispose();

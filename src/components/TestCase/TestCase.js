@@ -8,7 +8,10 @@ export const TestCase = ({ index }) => {
   const worker = new EvalWorker();
   worker.addEventListener("message", function (evt) {
     const { result } = evt.data;
-    $self.querySelector(".result").innerText = result;
+    $self.querySelector(".result").innerText = `
+      time: ${result.time}
+      value: ${result.value}
+    `;
   });
   $self.querySelector("button").addEventListener("click", function () {
     execTestcase();
