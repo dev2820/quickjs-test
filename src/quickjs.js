@@ -6,21 +6,20 @@ export async function execute(code, params) {
 
   try {
     const targetCode = wrapBorn(code, params);
-    console.log(targetCode);
+    console.time("quickjs runtime");
     const result = vm.evalCode(targetCode, {
       shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + 1000),
       memoryLimitBytes: 1024 * 1024,
     });
+    console.timeEnd("quickjs runtime");
 
     if (result.error) {
       const value = vm.dump(result.error);
-      // console.log("Execution failed:", vm.dump(result.error));
       result.error.dispose();
 
       return value;
     } else {
       const value = vm.dump(result.value);
-      // console.log("Success:", vm.dump(result.value));
       result.value.dispose();
 
       return value;
