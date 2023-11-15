@@ -8,6 +8,7 @@ export const TestCase = ({ index }) => {
   const worker = new EvalWorker();
   worker.addEventListener("message", function (evt) {
     const { result } = evt.data;
+    console.log(result);
     $self.querySelector(".result").innerText = `
       time: ${result.time}
       value: ${result.value}
