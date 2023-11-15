@@ -9,12 +9,18 @@ self.addEventListener("error", (e) => {
 
 self.addEventListener("message", async function (e) {
   const { id, params, code } = e.data;
-  console.log(params);
+
   try {
-    const result = await execute(code, params);
+    const start = performance.now();
+    const value = await execute(code, params);
+    const end = performance.now();
+
     self.postMessage({
       message: `${id} has done`,
-      result,
+      result: {
+        value,
+        time: end - start,
+      },
     });
   } catch (err) {
     self.postMessage({
