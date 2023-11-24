@@ -12,7 +12,8 @@ export async function execute(code, params) {
       shouldInterrupt: shouldInterruptAfterDeadline(Date.now() + 1000),
       memoryLimitBytes: 1024 * 1024,
     });
-    // console.timeEnd("quickjs runtime");
+
+    console.log(result);
     const endTime = performance.now();
 
     if (result.error) {
